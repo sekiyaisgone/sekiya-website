@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEKIYA - Hytale Adventure</title>
+    <link rel="icon" type="image/png" href="sekiyatranspapvp.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a9c6d;
+            --primary-light: #5fb87f;
+            --primary-dark: #3a7d57;
+            --accent: #d4a853;
+            --accent-light: #e8c068;
+            --bg-dark: #1a1c1e;
+            --bg-darker: #121416;
+            --bg-card: #222528;
+            --bg-card-hover: #2a2d31;
+            --text-primary: #f0eeea;
+            --text-secondary: #9a9590;
+            --text-muted: #6a6560;
+            --border-color: #3a3835;
+            --border-light: #4a4845;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.02;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(18, 20, 22, 0.98) 0%, rgba(18, 20, 22, 0.9) 70%, transparent 100%);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(18, 20, 22, 0.98);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 4px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: var(--accent);
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-center a {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+            cursor: pointer;
+        }
+
+        .nav-center a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-center a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-center a:hover::after {
+            width: 100%;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+        }
+
+        .btn-ghost:hover {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(212, 168, 83, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-light);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-large {
+            padding: 1rem 2.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-light);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            opacity: 0.9;
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at center top, transparent 0%, var(--bg-darker) 70%),
+                linear-gradient(to bottom, transparent 50%, var(--bg-darker) 100%);
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin-top: 15vh;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.5rem 1.2rem;
+            background: rgba(74, 156, 109, 0.15);
+            border: 1px solid rgba(74, 156, 109, 0.3);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            letter-spacing: 0.5px;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.2s forwards;
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .hero h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3.5rem, 10vw, 7rem);
+            font-weight: 400;
+            letter-spacing: 8px;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.4s forwards;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.5s forwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.6s forwards;
+        }
+
+        .server-ip-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 0.7s forwards;
+        }
+
+        .server-ip-box:hover {
+            border-color: var(--primary);
+            background: var(--bg-card-hover);
+        }
+
+        .server-ip-box:active {
+            transform: scale(0.98);
+        }
+
+        .server-ip-box .label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .server-ip-box .ip {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            color: var(--primary-light);
+            letter-spacing: 3px;
+        }
+
+        .server-ip-box svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .server-ip-box:hover svg {
+            stroke: var(--primary);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeUp 0.8s ease 1s forwards;
+        }
+
+        .scroll-indicator .mouse {
+            width: 22px;
+            height: 36px;
+            border: 2px solid var(--border-light);
+            border-radius: 11px;
+            position: relative;
+        }
+
+        .scroll-indicator .mouse::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 6px;
+            background: var(--text-muted);
+            border-radius: 2px;
+            animation: scrollDown 1.5s infinite;
+        }
+
+        @keyframes scrollDown {
+            0% { opacity: 1; top: 6px; }
+            100% { opacity: 0; top: 18px; }
+        }
+
+        /* Sections */
+        .news-section, .features-section, .staff-section, .legal-section {
+            padding: 6rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.2rem;
+            letter-spacing: 4px;
+        }
+
+        .section-link {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .section-link:hover {
+            color: var(--accent);
+        }
+
+        /* News Cards */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+
+        .news-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-light);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .news-card-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3.5rem;
+            color: var(--border-light);
+        }
+
+        .news-card-content {
+            padding: 1.5rem;
+        }
+
+        .news-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .news-card h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .news-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .news-card-link {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: gap 0.3s ease;
+        }
+
+        .news-card:hover .news-card-link {
+            gap: 10px;
+        }
+
+        /* Staff Section */
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .staff-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .staff-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .staff-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--text-primary);
+        }
+
+        .staff-card h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.25rem;
+        }
+
+        .staff-role {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Info Banner */
+        .info-banner {
+            padding: 4rem 3rem;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-banner-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .info-banner-text h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            letter-spacing: 3px;
+        }
+
+        .info-banner-text p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 500px;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(74, 156, 109, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+            letter-spacing: 2px;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .feature-card .learn-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            transition: gap 0.3s ease;
+        }
+
+        .feature-card:hover .learn-more {
+            gap: 10px;
+        }
+
+        /* Support Section */
+        .support-section {
+            padding: 6rem 3rem;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .support-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .support-card {
+            background: var(--bg-darker);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .support-card:hover {
+            border-color: var(--border-light);
+        }
+
+        .support-card h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .support-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Legal Section */
+        .legal-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .legal-tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .legal-tab:hover, .legal-tab.active {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .legal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .legal-content h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        .legal-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .legal-content ul {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .legal-panel {
+            display: none;
+        }
+
+        .legal-panel.active {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand .logo {
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-brand p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-top: 1rem;
+            max-width: 280px;
+        }
+
+        .footer-column h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin-bottom: 1.25rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-column a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .footer-column a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-socials a {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .footer-socials a:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal.modal-large {
+            max-width: 700px;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            letter-spacing: 3px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            background: var(--bg-darker);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group select {
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .modal-footer {
+            margin-top: 1.5rem;
+        }
+
+        .modal-footer .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .modal-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-info a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .detail-content h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--accent);
+        }
+
+        .detail-content h4:first-child {
+            margin-top: 0;
+        }
+
+        .detail-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-content ul {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-left: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--primary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast svg {
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+            .nav-center {
+                display: none;
+            }
+            .hero-content {
+                margin-top: 20vh;
+            }
+            .news-section, .features-section, .staff-section, .legal-section, .support-section {
+                padding: 4rem 1.5rem;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .footer-brand p {
+                max-width: 100%;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+            .info-banner-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .info-banner-text p {
+                max-width: 100%;
+            }
+        }
+
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="logo">SEKIYA</a>
+        <ul class="nav-center">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#news">News</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#staff">Staff</a></li>
+            <li><a href="#support">Support</a></li>
+            <li><a href="#legal">Legal</a></li>
+            <li><a href="https://discord.gg/j3JRyhA" target="_blank">Discord</a></li>
+        </ul>
+        <div class="nav-right">
+            <button class="btn btn-ghost" onclick="openModal('login')">Login</button>
+            <button class="btn btn-primary" onclick="openModal('register')">Register</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg">
+            <img src="sekiyatranspapvp.png" alt="Sekiya">
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                Now Live — Hytale Early Access
+            </div>
+            <h1>ADVENTURE AWAITS</h1>
+            <p class="hero-subtitle">Experience the ultimate Hytale journey</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary btn-large" onclick="openModal('register')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Start Playing
+                </button>
+                <a href="https://discord.gg/j3JRyhA" target="_blank" class="btn btn-outline btn-large">Join Community</a>
+            </div>
+            <div class="server-ip-box" id="ipBox" onclick="copyIP()">
+                <div>
+                    <div class="label">Click to Copy</div>
+                    <div class="ip">PLAY.SEKIYA.US</div>
+                </div>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+            <span>Scroll</span>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="news-section" id="news">
+        <div class="section-header scroll-animate">
+            <h2 class="section-title">LATEST NEWS</h2>
+            <a href="#" class="section-link">View All <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="news-grid">
+            <div class="news-card scroll-animate" onclick="openModal('newsWelcome')">
+                <div class="news-card-image">S</div>
+                <div class="news-card-content">
+                    <div class="news-card-meta"><span>January 15, 2026</span><span>•</span><span>Announcement</span></div>
+                    <h3>WELCOME TO SEKIYA</h3>
+                    <p>We're excited to announce the launch of Sekiya, a new adventure-focused Hytale experience. Join us on this journey.</p>
+                    <span class="news-card-link">Read More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                </div>
+            </div>
+            <div class="news-card scroll-animate" onclick="openModal('newsKitpvp')">
+                <div class="news-card-image">⚔</div>
+                <div class="news-card-content">
+                    <div class="news-card-meta"><span>January 14, 2026</span><span>•</span><span>Update</span></div>
+                    <h3>KITPVP NOW AVAILABLE</h3>
+                    <p>Our custom KitPvP mode is now live! Choose your loadout, enter the arena, and prove your combat skills.</p>
+                    <span class="news-card-link">Read More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                </div>
+            </div>
+            <div class="news-card scroll-animate" onclick="openModal('newsRpg')">
+                <div class="news-card-image">🎮</div>
+                <div class="news-card-content">
+                    <div class="news-card-meta"><span>Coming Soon</span><span>•</span><span>Preview</span></div>
+                    <h3>SEKIYA RPG</h3>
+                    <p>We're developing a standalone RPG experience set in the Sekiya universe. Stay tuned for more details.</p>
+                    <span class="news-card-link">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Staff Team Section -->
+    <section class="staff-section" id="staff">
+        <div class="section-header scroll-animate">
+            <h2 class="section-title">STAFF TEAM</h2>
+            <a class="section-link" onclick="openModal('staffApply')">Apply Now <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+        <div class="staff-grid">
+            <div class="staff-card scroll-animate" onclick="openModal('staffSekiya')">
+                <div class="staff-avatar">S</div>
+                <h4>SEKIYA</h4>
+                <span class="staff-role">Owner</span>
+            </div>
+            <div class="staff-card scroll-animate" onclick="openModal('staffOzzy')">
+                <div class="staff-avatar">O</div>
+                <h4>OZZY</h4>
+                <span class="staff-role">Developer</span>
+            </div>
+            <div class="staff-card scroll-animate" onclick="openModal('staffApply')">
+                <div class="staff-avatar" style="background: linear-gradient(135deg, var(--accent), var(--accent-light));">+</div>
+                <h4>JOIN US</h4>
+                <span class="staff-role">Apply Now</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Banner -->
+    <section class="info-banner">
+        <div class="info-banner-content">
+            <div class="info-banner-text scroll-animate">
+                <h2>JOIN OUR TEAM</h2>
+                <p>We're looking for passionate players to help build and moderate the Sekiya community. Apply to become a staff member today.</p>
+            </div>
+            <button class="btn btn-primary btn-large scroll-animate" onclick="openModal('staffApply')">Apply Now</button>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="section-header scroll-animate">
+            <h2 class="section-title">FEATURES</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card scroll-animate" onclick="openModal('featureCombat')">
+                <div class="feature-icon">⚔️</div>
+                <h3>CUSTOM COMBAT</h3>
+                <p>Experience refined PvP mechanics with balanced kits and smooth gameplay designed for competitive play.</p>
+                <span class="learn-more">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            </div>
+            <div class="feature-card scroll-animate" onclick="openModal('featureMaps')">
+                <div class="feature-icon">🗺️</div>
+                <h3>HANDCRAFTED MAPS</h3>
+                <p>Battle across unique arenas designed specifically for intense combat and strategic gameplay.</p>
+                <span class="learn-more">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            </div>
+            <div class="feature-card scroll-animate" onclick="openModal('featureRanked')">
+                <div class="feature-icon">🏆</div>
+                <h3>RANKED SYSTEM</h3>
+                <p>Climb the competitive ladder, earn rewards, and prove yourself against the best players.</p>
+                <span class="learn-more">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            </div>
+            <div class="feature-card scroll-animate" onclick="openModal('featureStats')">
+                <div class="feature-icon">📊</div>
+                <h3>LIVE STATISTICS</h3>
+                <p>Track your performance with detailed stats including kills, deaths, and win rates.</p>
+                <span class="learn-more">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            </div>
+            <div class="feature-card scroll-animate" onclick="openModal('featureCosmetics')">
+                <div class="feature-icon">🎨</div>
+                <h3>COSMETICS</h3>
+                <p>Stand out with exclusive effects, trails, and customization options.</p>
+                <span class="learn-more">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            </div>
+            <div class="feature-card scroll-animate" onclick="openModal('featureEvents')">
+                <div class="feature-icon">🎉</div>
+                <h3>EVENTS</h3>
+                <p>Participate in weekly tournaments and special events with exclusive rewards.</p>
+                <span class="learn-more">Learn More <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support Section -->
+    <section class="support-section" id="support">
+        <div class="support-content">
+            <div class="section-header scroll-animate">
+                <h2 class="section-title">SUPPORT</h2>
+            </div>
+            <div class="support-grid">
+                <div class="support-card scroll-animate">
+                    <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> General Help</h4>
+                    <p>Need help getting started? Check out our FAQ or reach out to our community for assistance with common questions.</p>
+                    <a href="https://discord.gg/j3JRyhA" target="_blank" class="btn btn-secondary">Visit Discord</a>
+                </div>
+                <div class="support-card scroll-animate">
+                    <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Bug Reports</h4>
+                    <p>Found a bug? Help us improve by reporting issues through our Discord server. Detailed reports help us fix things faster.</p>
+                    <a href="https://discord.gg/j3JRyhA" target="_blank" class="btn btn-secondary">Report Bug</a>
+                </div>
+                <div class="support-card scroll-animate">
+                    <h4><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Contact Us</h4>
+                    <p>Have a specific question or concern? Open a ticket in our Discord server and our team will get back to you.</p>
+                    <a href="https://discord.gg/j3JRyhA" target="_blank" class="btn btn-secondary">Open Ticket</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Legal Section -->
+    <section class="legal-section" id="legal">
+        <div class="section-header scroll-animate">
+            <h2 class="section-title">LEGAL</h2>
+        </div>
+        <div class="scroll-animate">
+            <div class="legal-tabs">
+                <button class="legal-tab active" onclick="showLegalTab('terms')">Terms of Service</button>
+                <button class="legal-tab" onclick="showLegalTab('privacy')">Privacy Policy</button>
+                <button class="legal-tab" onclick="showLegalTab('rules')">Server Rules</button>
+            </div>
+            <div class="legal-content">
+                <div class="legal-panel active" id="terms-panel">
+                    <h3>TERMS OF SERVICE</h3>
+                    <p>Last updated: January 15, 2026</p>
+                    <p>By accessing and using Sekiya services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.</p>
+                    <p><strong>1. Acceptance of Terms</strong><br>By creating an account or playing on our servers, you acknowledge that you have read, understood, and agree to be bound by these Terms.</p>
+                    <p><strong>2. User Conduct</strong><br>Users must conduct themselves in a respectful manner. Harassment, hate speech, cheating, and exploiting are strictly prohibited.</p>
+                    <p><strong>3. Account Responsibility</strong><br>You are responsible for maintaining the security of your account. Do not share your login credentials with others.</p>
+                    <p><strong>4. Intellectual Property</strong><br>All content on Sekiya is owned by Sekiya or its licensors. Unauthorized use is prohibited.</p>
+                    <p><strong>5. Termination</strong><br>We reserve the right to terminate or suspend accounts that violate these terms without prior notice.</p>
+                </div>
+                <div class="legal-panel" id="privacy-panel">
+                    <h3>PRIVACY POLICY</h3>
+                    <p>Last updated: January 15, 2026</p>
+                    <p>Your privacy is important to us. This policy outlines how we collect, use, and protect your information.</p>
+                    <p><strong>Information We Collect</strong></p>
+                    <ul><li>Account information (username, email)</li><li>Gameplay data and statistics</li><li>Communication data (chat logs for moderation)</li></ul>
+                    <p><strong>How We Use Your Information</strong></p>
+                    <ul><li>To provide and improve our services</li><li>To communicate with you about updates and events</li><li>To enforce our rules and maintain server security</li></ul>
+                    <p><strong>Data Protection</strong><br>We implement appropriate security measures to protect your personal information from unauthorized access or disclosure.</p>
+                </div>
+                <div class="legal-panel" id="rules-panel">
+                    <h3>SERVER RULES</h3>
+                    <p>Last updated: January 15, 2026</p>
+                    <p>All players must follow these rules to maintain a fair and enjoyable environment for everyone.</p>
+                    <p><strong>General Rules</strong></p>
+                    <ul><li>Be respectful to all players and staff</li><li>No harassment, hate speech, or discrimination</li><li>No spamming or excessive caps in chat</li><li>English only in global chat</li></ul>
+                    <p><strong>Gameplay Rules</strong></p>
+                    <ul><li>No hacking, cheating, or using exploits</li><li>No teaming in solo modes</li><li>No combat logging</li><li>No intentional lag or server disruption</li></ul>
+                    <p><strong>Punishments</strong><br>Violations may result in warnings, temporary bans, or permanent bans depending on severity. Staff decisions are final.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo">SEKIYA</a>
+                <p>An adventure-focused Hytale experience. Explore, battle, and forge your legend in a world of endless possibilities.</p>
+            </div>
+            <div class="footer-column">
+                <h4>NAVIGATION</h4>
+                <ul><li><a href="#home">Home</a></li><li><a href="#news">News</a></li><li><a href="#features">Features</a></li><li><a href="#staff">Staff</a></li></ul>
+            </div>
+            <div class="footer-column">
+                <h4>SUPPORT</h4>
+                <ul><li><a href="https://discord.gg/j3JRyhA" target="_blank">Discord</a></li><li><a href="#support">Help Center</a></li><li><a href="https://discord.gg/j3JRyhA" target="_blank">Bug Reports</a></li></ul>
+            </div>
+            <div class="footer-column">
+                <h4>LEGAL</h4>
+                <ul><li><a onclick="scrollToLegal('terms')">Terms of Service</a></li><li><a onclick="scrollToLegal('privacy')">Privacy Policy</a></li><li><a onclick="scrollToLegal('rules')">Rules</a></li></ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Sekiya. Not affiliated with Hypixel Studios or Hytale.</p>
+            <div class="footer-socials">
+                <a href="https://discord.gg/j3JRyhA" target="_blank" aria-label="Discord"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></a>
+                <a href="#" aria-label="Twitter"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+                <a href="#" aria-label="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>WELCOME BACK</h2>
+                <button class="modal-close" onclick="closeModal('login')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            </div>
+            <p class="modal-info">Account system coming soon! For now, join our <a href="https://discord.gg/j3JRyhA" target="_blank">Discord</a> to stay updated.</p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>CREATE ACCOUNT</h2>
+                <button class="modal-close" onclick="closeModal('register')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            </div>
+            <p class="modal-info">Account system coming soon! For now, join our <a href="https://discord.gg/j3JRyhA" target="_blank">Discord</a> to get started and stay updated on our progress.</p>
+        </div>
+    </div>
+
+    <!-- Staff Application Modal -->
+    <div class="modal-overlay" id="staffApplyModal">
+        <div class="modal modal-large">
+            <div class="modal-header">
+                <h2>STAFF APPLICATION</h2>
+                <button class="modal-close" onclick="closeModal('staffApply')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+            </div>
+            <p class="modal-info">Fill out the form below to apply for a staff position. We'll review your application and get back to you via Discord.</p>
+            <form id="staffApplicationForm" onsubmit="submitStaffApplication(event)">
+                <div class="form-row">
+                    <div class="form-group"><label>Discord Username</label><input type="text" placeholder="username#0000" required></div>
+                    <div class="form-group"><label>In-Game Name</label><input type="text" placeholder="Your IGN" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Age</label><input type="number" placeholder="Your age" min="13" required></div>
+                    <div class="form-group"><label>Timezone</label><input type="text" placeholder="e.g. EST, PST, GMT"></div>
+                </div>
+                <div class="form-group">
+                    <label>Position Applying For</label>
+                    <select required><option value="">Select a position...</option><option value="moderator">Moderator</option><option value="helper">Helper</option><option value="builder">Builder</option><option value="developer">Developer</option></select>
+                </div>
+                <div class="form-group"><label>Why do you want to join our team?</label><textarea placeholder="Tell us about yourself and why you'd be a great addition..." required></textarea></div>
+                <div class="form-group"><label>Previous Experience</label><textarea placeholder="Any relevant experience (server staff, moderation, building, development)..."></textarea></div>
+                <div class="form-group"><label>Availability (Hours per week)</label><input type="text" placeholder="e.g. 10-15 hours"></div>
+                <div class="modal-footer"><button type="submit" class="btn btn-primary btn-large">Submit Application</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Staff Profile Modals -->
+    <div class="modal-overlay" id="staffSekiyaModal">
+        <div class="modal">
+            <div class="modal-header"><h2>SEKIYA</h2><button class="modal-close" onclick="closeModal('staffSekiya')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><h4>Role</h4><p>Owner & Founder</p><h4>About</h4><p>Founder of Sekiya Network. Passionate about creating the best Hytale experience possible for the community.</p><h4>Responsibilities</h4><ul><li>Server management and direction</li><li>Community oversight</li><li>Major decisions and partnerships</li></ul></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="staffOzzyModal">
+        <div class="modal">
+            <div class="modal-header"><h2>OZZY</h2><button class="modal-close" onclick="closeModal('staffOzzy')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><h4>Role</h4><p>Lead Developer</p><h4>About</h4><p>Handles all technical aspects of Sekiya including plugin development, server configuration, and custom features.</p><h4>Responsibilities</h4><ul><li>Plugin development</li><li>Server configuration</li><li>Bug fixes and optimization</li><li>Custom features implementation</li></ul></div>
+        </div>
+    </div>
+
+    <!-- News Detail Modals -->
+    <div class="modal-overlay" id="newsWelcomeModal">
+        <div class="modal modal-large">
+            <div class="modal-header"><h2>WELCOME TO SEKIYA</h2><button class="modal-close" onclick="closeModal('newsWelcome')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><p><em>January 15, 2026 • Announcement</em></p><h4>A New Beginning</h4><p>We're thrilled to announce the official launch of Sekiya, a brand new adventure-focused Hytale server experience. After months of development and testing, we're ready to open our doors to the community.</p><h4>What We Offer</h4><p>Sekiya is built from the ground up to provide the best possible Hytale experience:</p><ul><li>Custom KitPvP with unique loadouts and balanced combat</li><li>Handcrafted maps designed for competitive play</li><li>Active development with regular updates</li><li>A passionate and dedicated team</li></ul><h4>Join Us</h4><p>Connect to <strong>play.sekiya.us</strong> to start your adventure. Join our Discord community to stay updated on the latest news and events!</p></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="newsKitpvpModal">
+        <div class="modal modal-large">
+            <div class="modal-header"><h2>KITPVP NOW AVAILABLE</h2><button class="modal-close" onclick="closeModal('newsKitpvp')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><p><em>January 14, 2026 • Update</em></p><h4>Enter the Arena</h4><p>Our custom KitPvP mode is now live! This isn't your average KitPvP - we've built a completely custom experience from the ground up.</p><h4>Available Kits</h4><ul><li><strong>Warrior</strong> - Balanced melee combat with sword and shield</li><li><strong>Archer</strong> - Long-range specialist with custom bow mechanics</li><li><strong>Tank</strong> - Heavy armor with high defense but slower movement</li><li><strong>Scout</strong> - Fast and agile with bonus speed and daggers</li></ul><h4>Features</h4><ul><li>Kill streaks with special rewards</li><li>Leaderboards and statistics tracking</li><li>Custom combat mechanics</li><li>Multiple arena maps</li></ul></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="newsRpgModal">
+        <div class="modal modal-large">
+            <div class="modal-header"><h2>SEKIYA RPG</h2><button class="modal-close" onclick="closeModal('newsRpg')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><p><em>Coming Soon • Preview</em></p><h4>A Standalone Adventure</h4><p>We're developing a standalone RPG experience set in the Sekiya universe. Built with RPG Maker, this will be a completely separate game that expands on the lore and world of Sekiya.</p><h4>What to Expect</h4><ul><li>Original story set in the Sekiya universe</li><li>Turn-based combat with unique mechanics</li><li>Explorable world with secrets and side quests</li><li>Character progression and customization</li></ul><h4>Development Status</h4><p>The game is currently in early development. Follow our Discord for development updates, sneak peeks, and the eventual release announcement!</p></div>
+        </div>
+    </div>
+
+    <!-- Feature Detail Modals -->
+    <div class="modal-overlay" id="featureCombatModal">
+        <div class="modal modal-large">
+            <div class="modal-header"><h2>CUSTOM COMBAT</h2><button class="modal-close" onclick="closeModal('featureCombat')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><h4>Refined PvP Mechanics</h4><p>Our combat system is designed from the ground up to provide smooth, responsive, and balanced gameplay. Every kit has been carefully tuned to ensure fair matchups.</p><h4>Key Features</h4><ul><li>Smooth hit registration with optimized networking</li><li>Balanced damage values across all weapons</li><li>Custom combo system with skill expression</li><li>No P2W advantages - skill-based gameplay only</li></ul><h4>Weapon Types</h4><ul><li><strong>Swords</strong> - Versatile melee with balanced stats</li><li><strong>Daggers</strong> - Fast attacks with lower damage</li><li><strong>Axes</strong> - High damage with slower swing speed</li><li><strong>Bows</strong> - Custom arrow mechanics with drop-off</li></ul></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="featureMapsModal">
+        <div class="modal modal-large">
+            <div class="modal-header"><h2>HANDCRAFTED MAPS</h2><button class="modal-close" onclick="closeModal('featureMaps')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><h4>Designed for Competition</h4><p>Every map on Sekiya is custom-built by our team, designed specifically for intense PvP combat and strategic gameplay.</p><h4>Map Philosophy</h4><ul><li>Balanced sightlines for ranged and melee combat</li><li>Multiple engagement zones and chokepoints</li><li>Vertical gameplay with height advantages</li><li>Cover options for tactical positioning</li></ul><h4>Current Maps</h4><ul><li><strong>The Arena</strong> - Classic circular colosseum design</li><li><strong>Ruins</strong> - Post-apocalyptic destroyed city</li><li><strong>Skyfall</strong> - Floating islands with void pits</li></ul><p>New maps are added regularly based on community feedback!</p></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="featureRankedModal">
+        <div class="modal modal-large">
+            <div class="modal-header"><h2>RANKED SYSTEM</h2><button class="modal-close" onclick="closeModal('featureRanked')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><h4>Competitive Ladder</h4><p>Test your skills against the best players on Sekiya with our ranked competitive system.</p><h4>Rank Tiers</h4><ul><li><strong>Bronze</strong> - Starting rank for all players</li><li><strong>Silver</strong> - Developing skills</li><li><strong>Gold</strong> - Solid fundamentals</li><li><strong>Platinum</strong> - Advanced players</li><li><strong>Diamond</strong> - Elite competitors</li><li><strong>Champion</strong> - Top 100 players</li></ul><h4>Rewards</h4><p>Climb the ranks to earn exclusive cosmetics, titles, and bragging rights. Season rewards are given at the end of each competitive season!</p></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="featureStatsModal">
+        <div class="modal modal-large">
+            <div class="modal-header"><h2>LIVE STATISTICS</h2><button class="modal-close" onclick="closeModal('featureStats')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><h4>Track Everything</h4><p>Our comprehensive statistics system tracks every aspect of your gameplay so you can see how you stack up.</p><h4>Tracked Stats</h4><ul><li>Kills, deaths, and K/D ratio</li><li>Win rate and games played</li><li>Kill streaks (current and best)</li><li>Damage dealt and received</li><li>Accuracy with ranged weapons</li><li>Time played and session data</li></ul><h4>Leaderboards</h4><p>Compete for the top spots on our global leaderboards. Daily, weekly, and all-time boards available.</p></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="featureCosmeticsModal">
+        <div class="modal modal-large">
+            <div class="modal-header"><h2>COSMETICS</h2><button class="modal-close" onclick="closeModal('featureCosmetics')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><h4>Stand Out</h4><p>Customize your look with our extensive cosmetics system. All cosmetics are purely visual and provide no gameplay advantages.</p><h4>Cosmetic Types</h4><ul><li><strong>Kill Effects</strong> - Special effects when you eliminate opponents</li><li><strong>Trails</strong> - Particle effects that follow your character</li><li><strong>Titles</strong> - Custom titles displayed with your name</li><li><strong>Chat Colors</strong> - Personalized chat message colors</li></ul><h4>How to Obtain</h4><ul><li>Rank up in competitive for exclusive rewards</li><li>Complete achievements for special cosmetics</li><li>Participate in events for limited-time items</li><li>Support the server through our store</li></ul></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="featureEventsModal">
+        <div class="modal modal-large">
+            <div class="modal-header"><h2>EVENTS</h2><button class="modal-close" onclick="closeModal('featureEvents')"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+            <div class="detail-content"><h4>Always Something Happening</h4><p>We host regular events to keep the gameplay fresh and exciting. There's always something new to participate in!</p><h4>Event Types</h4><ul><li><strong>Weekly Tournaments</strong> - Compete for prizes every weekend</li><li><strong>Double XP Weekends</strong> - Accelerated progression events</li><li><strong>Special Game Modes</strong> - Limited-time unique modes</li><li><strong>Community Events</strong> - Player-organized competitions</li></ul><h4>Rewards</h4><p>Event participants can earn exclusive cosmetics, titles, and other rewards not available anywhere else. Top performers get their names on our Hall of Fame!</p><h4>Stay Updated</h4><p>Join our Discord to get notifications about upcoming events and never miss out!</p></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="toastMessage">IP Copied to clipboard!</span>
+    </div>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Copy IP function - Fixed
+        function copyIP() {
+            const ip = 'play.sekiya.us';
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(ip).then(() => {
+                    showToast('IP Copied to clipboard!');
+                }).catch(() => {
+                    fallbackCopy(ip);
+                });
+            } else {
+                fallbackCopy(ip);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('IP Copied to clipboard!');
+            } catch (err) {
+                showToast('IP: play.sekiya.us');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Modal functions
+        function openModal(type) {
+            document.getElementById(type + 'Modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Legal tabs
+        function showLegalTab(tab) {
+            document.querySelectorAll('.legal-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.legal-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(tab + '-panel').classList.add('active');
+        }
+
+        function scrollToLegal(tab) {
+            document.getElementById('legal').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                document.querySelectorAll('.legal-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.legal-panel').forEach(p => p.classList.remove('active'));
+                document.querySelector(`.legal-tab[onclick="showLegalTab('${tab}')"]`).classList.add('active');
+                document.getElementById(tab + '-panel').classList.add('active');
+            }, 500);
+        }
+
+        function submitStaffApplication(e) {
+            e.preventDefault();
+            showToast('Application submitted! Check Discord for updates.');
+            closeModal('staffApply');
+            e.target.reset();
+        }
+
+        // Scroll animations
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => { entry.target.classList.add('visible'); }, index * 100);
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
